@@ -1,0 +1,23 @@
+{
+  "name": "store4mp",
+  "version": "1.0.0",
+  "description": "A very basic data store manager for mini program",
+  "main": "es/index.js",
+  "module": "es/index.js",
+  "type": "module",
+  "files": [
+    "es"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "keywords": [
+    "mini program",
+    "store"
+  ],
+  "author": "07akioni",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.7.4"
+  }
+}
