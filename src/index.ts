@@ -1,43 +1,49 @@
-type Store<T, U extends Record<string, unknown>> = {
+type Store<
+  Data extends Record<string, unknown>,
+  Actions extends Record<string, unknown> = Record<string, unknown>
+> = {
   id: string;
-  data: T;
-  on<V extends keyof U & string>(
-    action: V,
-    callback: (arg: { payload: U[V]; data: T }) => void
+  data: Data;
+  on<Action extends keyof Actions & string>(
+    action: Action,
+    callback: (arg: { payload: Actions[Action]; data: Data }) => void
   ): void;
-  off<V extends keyof U & string>(
-    action: V,
-    callback: (arg: { payload: U[V]; data: T }) => void
+  off<Action extends keyof Actions & string>(
+    action: Action,
+    callback: (arg: { payload: Actions[Action]; data: Data }) => void
   ): void;
-  dispatch<V extends keyof U & string>(action: V, payload: U[V]): void;
+  dispatch<Action extends keyof Actions & string>(
+    action: Action,
+    payload: Actions[Action]
+  ): void;
 };
 
 export type StoreManager<
-  T extends Record<string, unknown>,
-  U extends Record<string, unknown>
+  Data extends Record<string, unknown>,
+  Actions extends Record<string, unknown> = Record<string, unknown>
 > = {
-  allocateStore(): Store<T, U>;
-  getDefaultData(): T;
-  getStore(id: string | undefined | null): Store<T, U>;
+  allocateStore(): Store<Data, Actions>;
+  getDefaultData(): Data;
+  getStore(id: string | undefined | null): Store<Data, Actions>;
   freeStore(id: string | undefined | null): void;
 };
 
 export function createStoreManager<
-  T extends Record<string, unknown>,
-  U extends Record<string, unknown> = Record<string, unknown>
->(defaultDataFactory: () => T): StoreManager<T, U> {
+  Data extends Record<string, unknown>,
+  Actions extends Record<string, unknown> = Record<string, unknown>
+>(defaultDataFactory: () => Data): StoreManager<Data, Actions> {
   let storeId = 1;
-  const stores = new Map<string, Store<T, U>>();
+  const stores = new Map<string, Store<Data, Actions>>();
   return {
     getDefaultData: defaultDataFactory,
-    allocateStore(): Store<T, U> {
+    allocateStore(): Store<Data, Actions> {
       let _storeId = `${storeId++}`;
-      const store = createStore<U, T>(_storeId, defaultDataFactory);
+      const store = createStore<Data, Actions>(_storeId, defaultDataFactory);
       stores.set(_storeId, store);
       return store;
     },
     // We allow id with type undefined & null to make user easier to pass params in
-    getStore(id: string | undefined | null): Store<T, U> {
+    getStore(id: string | undefined | null): Store<Data, Actions> {
       if (id === null || id === undefined)
         throw new Error(`id should be a string in freeStore, not ${id}`);
       const store = stores.get(id);
@@ -55,13 +61,13 @@ export function createStoreManager<
   };
 }
 
-function createStore<U extends Record<string, unknown>, T = any>(
-  id: string,
-  defaultDataFactory: () => T
-): Store<T, U> {
+function createStore<
+  Data extends Record<string, unknown> = Record<string, unknown>,
+  Actions extends Record<string, unknown> = Record<string, unknown>
+>(id: string, defaultDataFactory: () => Data): Store<Data, Actions> {
   const callbacks: Record<
-    keyof U,
-    Set<(arg: { payload: U[keyof U]; data: T }) => void>
+    keyof Actions,
+    Set<(arg: { payload: Actions[keyof Actions]; data: Data }) => void>
   > = {} as any;
   const data = defaultDataFactory();
   return {
@@ -69,7 +75,7 @@ function createStore<U extends Record<string, unknown>, T = any>(
     data,
     on: (action, callback) => {
       let actionCallbacks: Set<
-        (arg: { payload: U[typeof action]; data: T }) => void
+        (arg: { payload: Actions[typeof action]; data: Data }) => void
       >;
       if (action in callbacks) {
         actionCallbacks = callbacks[action];
@@ -81,7 +87,7 @@ function createStore<U extends Record<string, unknown>, T = any>(
     off: (action, callback) => {
       if (action in callbacks) {
         const actionCallbacks: Set<
-          (arg: { payload: U[typeof action]; data: T }) => void
+          (arg: { payload: Actions[typeof action]; data: Data }) => void
         > = callbacks[action];
         actionCallbacks.delete(callback);
       }
