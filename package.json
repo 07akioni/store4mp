@@ -1,6 +1,6 @@
 {
   "name": "store4mp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A very basic data store manager for mini program",
   "main": "lib/index.js",
   "module": "es/index.js",
