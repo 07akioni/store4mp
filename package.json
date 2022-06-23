@@ -9,7 +9,8 @@
     "lib"
   ],
   "scripts": {
-    "build": "rm -rf es lib && tsc -p tsconfig.json & tsc -p tsconfig.cjs.json"
+    "build": "rm -rf es lib && tsc -p tsconfig.json & tsc -p tsconfig.cjs.json",
+    "prepublishOnly": "pnpm run build"
   },
   "keywords": [
     "mini program",
