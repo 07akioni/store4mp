@@ -1,6 +1,6 @@
 # store4mp
 
-A very basic data store manager library for mini program.
+A very basic data store manager library for mini program (mainly for cross page usage).
 
 Mini program's data share ability is very, very poor. There's not easy way to
 share data across pages. When it comes to nested pages, it will become harder.
