@@ -5,7 +5,8 @@
   "main": "lib/index.js",
   "module": "es/index.js",
   "files": [
-    "es"
+    "es",
+    "lib"
   ],
   "scripts": {
     "build": "rm -rf es lib && tsc -p tsconfig.json & tsc -p tsconfig.cjs.json"
