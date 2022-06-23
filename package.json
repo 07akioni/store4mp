@@ -20,5 +20,8 @@
   "license": "MIT",
   "devDependencies": {
     "typescript": "^4.7.4"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
   }
 }
